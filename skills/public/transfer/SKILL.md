@@ -38,9 +38,9 @@ Before executing the transfer, summarize the details and ask the user to confirm
 Use `ask_clarification` with `clarification_type="risk_confirmation"` to get confirmation.
 
 ### Step 4: Execute Transfer
-Read `references/workflow_api.yaml` for the workflow name and call:
+Read `references/workflow_api.yaml` for the endpoint URL and call:
 ```
-call_workflow(workflow_name="transfer", params={...extracted parameters...})
+call_workflow(endpoint="<endpoint from workflow_api.yaml>", params={...extracted parameters...})
 ```
 
 ### Step 5: Present Result

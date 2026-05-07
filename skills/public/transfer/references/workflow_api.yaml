@@ -1,10 +1,10 @@
 # Transfer Workflow API Configuration
 # This file defines how to call the external workflow platform for transfers.
 
-workflow_name: transfer
+# Full endpoint URL for the transfer workflow.
+# The agent reads this and passes it to call_workflow(endpoint=...).
+endpoint: https://workflow-platform.example.com/api/v1/workflows/transfer
 method: POST
-# The full URL is: {workflow.base_url}/{workflow_name}
-# e.g., https://workflow-platform.example.com/api/v1/workflows/transfer
 
 # Request body structure (merged with passthrough_params automatically):
 request_body:

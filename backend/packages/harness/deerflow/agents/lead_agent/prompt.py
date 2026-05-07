@@ -743,19 +743,15 @@ def _build_acp_section(*, app_config: AppConfig | None = None) -> str:
 
 
 def _build_banking_assistant_section(*, app_config: AppConfig | None = None) -> str:
-    """Build the banking assistant prompt section when workflow integration is enabled."""
-    if app_config is None:
-        try:
-            from deerflow.config import get_app_config
+    """Build the banking assistant prompt section.
 
-            config = get_app_config()
-        except Exception:
-            return ""
-    else:
-        config = app_config
-
-    workflow_config = getattr(config, "workflow", None)
-    if workflow_config is None or not workflow_config.enabled:
+    Activated when any loaded Skill declares ``call_workflow`` in its
+    ``allowed-tools``.  No global workflow configuration is required — all
+    endpoint and parameter information lives in each Skill's references.
+    """
+    skills = get_enabled_skills_for_config(app_config)
+    has_workflow_skills = any("call_workflow" in (skill.allowed_tools or []) for skill in skills)
+    if not has_workflow_skills:
         return ""
 
     return """<banking_assistant_mode>
@@ -772,8 +768,8 @@ Your core capabilities:
 2. Read the matched Skill's SKILL.md to understand the business flow
 3. Read the Skill's `references/params_schema.yaml` to know which parameters to extract
 4. Extract parameters from the conversation; if any required parameter is missing, use `ask_clarification` to ask the user
-5. Once all required parameters are collected, read `references/workflow_api.yaml` for the workflow name
-6. Call `call_workflow(workflow_name=..., params=...)` with the extracted parameters
+5. Once all required parameters are collected, read `references/workflow_api.yaml` for the endpoint URL
+6. Call `call_workflow(endpoint=<url from workflow_api.yaml>, params={...})` with the extracted parameters
 7. Present the workflow result to the user in a friendly format
 
 **CRITICAL RULES:**

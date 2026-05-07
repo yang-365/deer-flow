@@ -25,9 +25,9 @@ Check the conversation for:
 These are usually optional since users typically just want their primary account balance.
 
 ### Step 3: Execute Query
-Read `references/workflow_api.yaml` and call:
+Read `references/workflow_api.yaml` for the endpoint URL and call:
 ```
-call_workflow(workflow_name="balance_query", params={...extracted parameters...})
+call_workflow(endpoint="<endpoint from workflow_api.yaml>", params={...extracted parameters...})
 ```
 
 ### Step 4: Present Result

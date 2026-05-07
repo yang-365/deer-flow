@@ -1,6 +1,7 @@
 # Balance Query Workflow API Configuration
 
-workflow_name: balance_query
+# Full endpoint URL for the balance query workflow.
+endpoint: https://workflow-platform.example.com/api/v1/workflows/balance_query
 method: POST
 
 request_body:

@@ -83,11 +83,9 @@ def get_available_tools(
     # Conditionally add tools based on config
     builtin_tools = BUILTIN_TOOLS.copy()
 
-    # Add call_workflow tool when workflow integration is enabled
-    workflow_config = getattr(config, "workflow", None)
-    if workflow_config is not None and getattr(workflow_config, "enabled", False):
-        builtin_tools.append(call_workflow_tool)
-        logger.info("Including call_workflow tool (workflow integration enabled)")
+    # Always include call_workflow — endpoint is self-contained in each Skill's
+    # references/workflow_api.yaml so no global config is needed.
+    builtin_tools.append(call_workflow_tool)
 
     skill_evolution_config = getattr(config, "skill_evolution", None)
     if getattr(skill_evolution_config, "enabled", False):

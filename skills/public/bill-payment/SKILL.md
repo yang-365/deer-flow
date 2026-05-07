@@ -27,9 +27,9 @@ Check the conversation for:
 If any **required** parameter is missing, use `ask_clarification` to ask the user.
 
 ### Step 3: Execute Payment
-Read `references/workflow_api.yaml` and call:
+Read `references/workflow_api.yaml` for the endpoint URL and call:
 ```
-call_workflow(workflow_name="bill_payment", params={...extracted parameters...})
+call_workflow(endpoint="<endpoint from workflow_api.yaml>", params={...extracted parameters...})
 ```
 
 ### Step 4: Present Result
