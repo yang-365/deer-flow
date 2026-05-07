@@ -16,7 +16,7 @@ from typing import Annotated
 
 import httpx
 from langchain_core.tools import tool
-from langgraph.prebuilt.tool_node import InjectedToolCallId
+from langchain.tools import InjectedToolCallId
 from langgraph.runtime import get_runtime
 
 logger = logging.getLogger(__name__)

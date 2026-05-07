@@ -83,7 +83,6 @@ stop_all() {
     # Force-kill any survivors still holding the service ports
     _kill_port 8001
     _kill_port 3000
-    ./scripts/cleanup-containers.sh deer-flow-sandbox 2>/dev/null || true
     echo "✓ All services stopped"
 }
 
@@ -134,6 +133,9 @@ else
     GATEWAY_EXTRA_FLAGS=""
 fi
 
+# Allow auth requests from nginx origin (CSRF protection bypass for same-host dev)
+export GATEWAY_CORS_ORIGINS="${GATEWAY_CORS_ORIGINS:-http://localhost:2026}"
+
 # ── Stop existing services (skip if restart already did it) ──────────────────
 
 if ! $ALREADY_STOPPED; then
@@ -159,8 +161,8 @@ fi
 
 if ! $SKIP_INSTALL; then
     echo "Syncing dependencies..."
-    (cd backend && uv sync --quiet) || { echo "✗ Backend dependency install failed"; exit 1; }
-    (cd frontend && pnpm install --silent) || { echo "✗ Frontend dependency install failed"; exit 1; }
+    (cd backend && uv sync) || { echo "✗ Backend dependency install failed"; exit 1; }
+    (cd frontend && pnpm install) || { echo "✗ Frontend dependency install failed"; exit 1; }
     echo "✓ Dependencies synced"
 else
     echo "⏩ Skipping dependency install (--skip-install)"
