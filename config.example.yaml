@@ -811,6 +811,23 @@ skill_evolution:
   moderation_model_name: null # Model for LLM-based security scanning (null = use default model)
 
 # ============================================================================
+# Workflow Integration Configuration
+# ============================================================================
+# External workflow platform integration for banking/enterprise assistant mode.
+# When enabled, the agent gains access to the `call_workflow` tool to invoke
+# external workflow APIs for deterministic business processes (transfer, bill
+# payment, balance query, etc.).
+#
+# Authentication headers and passthrough parameters are injected from the
+# frontend context so the LLM never sees them — only business parameters
+# extracted from conversation are visible to the model.
+#
+# workflow:
+#   enabled: true
+#   base_url: https://workflow-platform.example.com/api/v1/workflows
+#   timeout_seconds: 30
+
+# ============================================================================
 # Checkpointer Configuration (DEPRECATED — use `database` instead)
 # ============================================================================
 # Legacy standalone checkpointer config. Kept for backward compatibility.

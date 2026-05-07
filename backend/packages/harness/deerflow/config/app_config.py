@@ -29,6 +29,7 @@ from deerflow.config.title_config import TitleConfig, load_title_config_from_dic
 from deerflow.config.token_usage_config import TokenUsageConfig
 from deerflow.config.tool_config import ToolConfig, ToolGroupConfig
 from deerflow.config.tool_search_config import ToolSearchConfig, load_tool_search_config_from_dict
+from deerflow.config.workflow_config import WorkflowConfig
 
 load_dotenv()
 
@@ -105,6 +106,7 @@ class AppConfig(BaseModel):
     run_events: RunEventsConfig = Field(default_factory=RunEventsConfig, description="Run event storage configuration")
     checkpointer: CheckpointerConfig | None = Field(default=None, description="Checkpointer configuration")
     stream_bridge: StreamBridgeConfig | None = Field(default=None, description="Stream bridge configuration")
+    workflow: WorkflowConfig = Field(default_factory=WorkflowConfig, description="External workflow platform integration configuration")
 
     @classmethod
     def resolve_config_path(cls, config_path: str | None = None) -> Path:

@@ -1,0 +1,33 @@
+# Bill Payment Workflow Parameter Schema
+
+workflow_name: bill_payment
+
+parameters:
+  - name: bill_type
+    type: string
+    required: true
+    description: Type of bill to pay
+    enum:
+      - electricity
+      - water
+      - gas
+      - phone
+      - internet
+      - property
+
+  - name: account_number
+    type: string
+    required: true
+    description: The utility or service account number
+
+  - name: amount
+    type: number
+    required: false
+    description: Payment amount. If not specified, the outstanding balance will be paid.
+    validation:
+      min: 0.01
+
+  - name: billing_period
+    type: string
+    required: false
+    description: Billing period (e.g., "2026-01", "2026-Q1")

@@ -1,0 +1,13 @@
+# Balance Query Workflow API Configuration
+
+workflow_name: balance_query
+method: POST
+
+request_body:
+  query_type: "{{query_type}}"
+  account_type: "{{account_type}}"
+
+response:
+  success_field: success
+  data_field: data
+  error_field: error

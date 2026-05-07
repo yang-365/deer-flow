@@ -1,0 +1,15 @@
+# Bill Payment Workflow API Configuration
+
+workflow_name: bill_payment
+method: POST
+
+request_body:
+  bill_type: "{{bill_type}}"
+  account_number: "{{account_number}}"
+  amount: "{{amount}}"
+  billing_period: "{{billing_period}}"
+
+response:
+  success_field: success
+  data_field: data
+  error_field: error

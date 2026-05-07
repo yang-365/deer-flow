@@ -4,6 +4,7 @@ from .setup_agent_tool import setup_agent
 from .task_tool import task_tool
 from .update_agent_tool import update_agent
 from .view_image_tool import view_image_tool
+from .workflow_tool import call_workflow_tool
 
 __all__ = [
     "setup_agent",
@@ -12,4 +13,5 @@ __all__ = [
     "ask_clarification_tool",
     "view_image_tool",
     "task_tool",
+    "call_workflow_tool",
 ]

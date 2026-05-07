@@ -366,6 +366,7 @@ SYSTEM_PROMPT_TEMPLATE = """
 You are {agent_name}, an open-source super agent.
 </role>
 
+{banking_assistant_section}
 {soul}
 {self_update_section}
 {memory_context}
@@ -741,6 +742,51 @@ def _build_acp_section(*, app_config: AppConfig | None = None) -> str:
     )
 
 
+def _build_banking_assistant_section(*, app_config: AppConfig | None = None) -> str:
+    """Build the banking assistant prompt section when workflow integration is enabled."""
+    if app_config is None:
+        try:
+            from deerflow.config import get_app_config
+
+            config = get_app_config()
+        except Exception:
+            return ""
+    else:
+        config = app_config
+
+    workflow_config = getattr(config, "workflow", None)
+    if workflow_config is None or not workflow_config.enabled:
+        return ""
+
+    return """<banking_assistant_mode>
+**You are a Mobile Banking Intelligent Assistant (掌上银行智能助手).**
+
+Your core capabilities:
+1. **Intent Recognition**: Identify user intents from conversation (transfer, bill payment, shopping, balance query, chitchat, customer service, etc.)
+2. **Parameter Extraction**: Extract required business parameters from conversation context based on each Skill's parameter schema
+3. **Parameter Clarification**: When required parameters are missing, proactively ask the user for them
+4. **Workflow Execution**: Call external workflow APIs via `call_workflow` tool to execute business processes
+
+**Workflow:**
+1. Identify user intent → match to a Skill
+2. Read the matched Skill's SKILL.md to understand the business flow
+3. Read the Skill's `references/params_schema.yaml` to know which parameters to extract
+4. Extract parameters from the conversation; if any required parameter is missing, use `ask_clarification` to ask the user
+5. Once all required parameters are collected, read `references/workflow_api.yaml` for the workflow name
+6. Call `call_workflow(workflow_name=..., params=...)` with the extracted parameters
+7. Present the workflow result to the user in a friendly format
+
+**CRITICAL RULES:**
+- You can ONLY execute business logic through the `call_workflow` tool — do NOT attempt to execute scripts or code directly
+- Authentication headers and session parameters are handled automatically — do NOT ask the user for tokens, session IDs, or authentication info
+- Only extract parameters that are defined in the Skill's params_schema — do NOT invent extra parameters
+- For simple questions (chitchat, FAQ), respond directly without calling any workflow
+- Always confirm critical operations (transfer, payment) with the user before executing
+- Keep responses concise and professional, suitable for a banking context
+</banking_assistant_mode>
+"""
+
+
 def _build_custom_mounts_section(*, app_config: AppConfig | None = None) -> str:
     """Build a prompt section for explicitly configured sandbox mounts."""
     if app_config is None:
@@ -812,9 +858,13 @@ def apply_prompt_template(
     custom_mounts_section = _build_custom_mounts_section(app_config=app_config)
     acp_and_mounts_section = "\n".join(section for section in (acp_section, custom_mounts_section) if section)
 
+    # Build banking assistant section (only when workflow is enabled)
+    banking_assistant_section = _build_banking_assistant_section(app_config=app_config)
+
     # Format the prompt with dynamic skills and memory
     prompt = SYSTEM_PROMPT_TEMPLATE.format(
         agent_name=agent_name or "DeerFlow 2.0",
+        banking_assistant_section=banking_assistant_section,
         soul=get_agent_soul(agent_name),
         self_update_section=_build_self_update_section(agent_name),
         skills_section=skills_section,

@@ -1,0 +1,24 @@
+# Balance Query Workflow Parameter Schema
+
+workflow_name: balance_query
+
+parameters:
+  - name: query_type
+    type: string
+    required: false
+    default: balance
+    description: Type of query
+    enum:
+      - balance
+      - transactions
+      - account_info
+
+  - name: account_type
+    type: string
+    required: false
+    default: checking
+    description: Which account to query
+    enum:
+      - checking
+      - savings
+      - credit_card

@@ -17,6 +17,10 @@ export interface AgentThreadContext extends Record<string, unknown> {
   subagent_enabled: boolean;
   reasoning_effort?: "minimal" | "low" | "medium" | "high";
   agent_name?: string;
+  /** Headers to pass through to external workflow API calls (e.g. Authorization, X-User-Id). */
+  passthrough_headers?: Record<string, string>;
+  /** Parameters to pass through to external workflow API body (e.g. session_token, client_ip). */
+  passthrough_params?: Record<string, unknown>;
 }
 
 export interface AgentThread extends Thread<AgentThreadState> {

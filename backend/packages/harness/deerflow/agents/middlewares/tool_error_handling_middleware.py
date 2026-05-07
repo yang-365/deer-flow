@@ -67,6 +67,11 @@ class ToolErrorHandlingMiddleware(AgentMiddleware[AgentState]):
             return self._build_error_message(request, exc)
 
 
+def _has_sandbox_tools(app_config: AppConfig) -> bool:
+    """Check whether any configured tools require sandbox access."""
+    return any(tool.use.startswith("deerflow.sandbox.tools:") for tool in app_config.tools)
+
+
 def _build_runtime_middlewares(
     *,
     app_config: AppConfig,
@@ -77,12 +82,17 @@ def _build_runtime_middlewares(
     """Build shared base middlewares for agent execution."""
     from deerflow.agents.middlewares.llm_error_handling_middleware import LLMErrorHandlingMiddleware
     from deerflow.agents.middlewares.thread_data_middleware import ThreadDataMiddleware
-    from deerflow.sandbox.middleware import SandboxMiddleware
 
     middlewares: list[AgentMiddleware] = [
         ThreadDataMiddleware(lazy_init=lazy_init),
-        SandboxMiddleware(lazy_init=lazy_init),
     ]
+
+    # Only include sandbox middleware when sandbox tools are configured
+    sandbox_needed = _has_sandbox_tools(app_config)
+    if sandbox_needed:
+        from deerflow.sandbox.middleware import SandboxMiddleware
+
+        middlewares.append(SandboxMiddleware(lazy_init=lazy_init))
 
     if include_uploads:
         from deerflow.agents.middlewares.uploads_middleware import UploadsMiddleware
@@ -119,9 +129,12 @@ def _build_runtime_middlewares(
         provider = provider_cls(**provider_kwargs)
         middlewares.append(GuardrailMiddleware(provider, fail_closed=guardrails_config.fail_closed, passport=guardrails_config.passport))
 
-    from deerflow.agents.middlewares.sandbox_audit_middleware import SandboxAuditMiddleware
+    # Only include sandbox audit middleware when sandbox tools are configured
+    if _has_sandbox_tools(app_config):
+        from deerflow.agents.middlewares.sandbox_audit_middleware import SandboxAuditMiddleware
 
-    middlewares.append(SandboxAuditMiddleware())
+        middlewares.append(SandboxAuditMiddleware())
+
     middlewares.append(ToolErrorHandlingMiddleware())
     return middlewares
 
