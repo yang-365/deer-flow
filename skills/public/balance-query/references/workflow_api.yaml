@@ -1,0 +1,14 @@
+# Balance Query Workflow API Configuration
+
+# Full endpoint URL for the balance query workflow.
+endpoint: https://workflow-platform.example.com/api/v1/workflows/balance_query
+method: POST
+
+request_body:
+  query_type: "{{query_type}}"
+  account_type: "{{account_type}}"
+
+response:
+  success_field: success
+  data_field: data
+  error_field: error

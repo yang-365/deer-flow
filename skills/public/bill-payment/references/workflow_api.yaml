@@ -1,0 +1,16 @@
+# Bill Payment Workflow API Configuration
+
+# Full endpoint URL for the bill payment workflow.
+endpoint: https://workflow-platform.example.com/api/v1/workflows/bill_payment
+method: POST
+
+request_body:
+  bill_type: "{{bill_type}}"
+  account_number: "{{account_number}}"
+  amount: "{{amount}}"
+  billing_period: "{{billing_period}}"
+
+response:
+  success_field: success
+  data_field: data
+  error_field: error

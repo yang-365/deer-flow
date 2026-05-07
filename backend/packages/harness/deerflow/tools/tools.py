@@ -8,6 +8,7 @@ from deerflow.reflection import resolve_variable
 from deerflow.sandbox.security import is_host_bash_allowed
 from deerflow.tools.builtins import ask_clarification_tool, present_file_tool, task_tool, view_image_tool
 from deerflow.tools.builtins.tool_search import reset_deferred_registry
+from deerflow.tools.builtins.workflow_tool import call_workflow_tool
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +82,11 @@ def get_available_tools(
 
     # Conditionally add tools based on config
     builtin_tools = BUILTIN_TOOLS.copy()
+
+    # Always include call_workflow — endpoint is self-contained in each Skill's
+    # references/workflow_api.yaml so no global config is needed.
+    builtin_tools.append(call_workflow_tool)
+
     skill_evolution_config = getattr(config, "skill_evolution", None)
     if getattr(skill_evolution_config, "enabled", False):
         from deerflow.tools.skill_manage_tool import skill_manage_tool
