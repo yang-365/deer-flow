@@ -1,12 +1,12 @@
-# Balance Query Execution Guide
+# Balance Query Execution Guide (余额查询执行指南)
 
 ## Step 1: Parameter Extraction
-Read `params_schema.yaml` in this folder to understand the full parameter schema. Extract the following from the conversation:
+Extract the following parameters from the conversation (all optional):
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| query_type | No (default: balance) | What to query: balance, transactions, or account_info |
-| account_type | No (default: checking) | Which account: checking, savings, credit_card |
+| query_type | No (default: balance) | What to query: balance, transactions, or account_info (查询类型) |
+| account_type | No (default: checking) | Which account: checking, savings, credit_card (账户类型) |
 
 These are usually optional since users typically just want their primary account balance.
 
@@ -14,9 +14,9 @@ These are usually optional since users typically just want their primary account
 If the user's request is ambiguous about which account or query type, use `ask_clarification` with `clarification_type="ambiguous_requirement"` to clarify.
 
 ## Step 3: Execute Query
-Read `workflow_api.yaml` in this folder for the endpoint URL, then call:
+Call the workflow API:
 ```
-call_workflow(endpoint="<endpoint from workflow_api.yaml>", params={
+call_workflow(endpoint="http://localhost:9100/api/v1/workflows/balance-query", params={
   "query_type": "...",
   "account_type": "..."
 })

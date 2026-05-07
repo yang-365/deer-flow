@@ -1,15 +1,15 @@
-# Transfer Execution Guide
+# Transfer Execution Guide (转账执行指南)
 
 ## Step 1: Parameter Extraction
-Read `params_schema.yaml` in this folder to understand the full parameter schema. Extract the following from the conversation:
+Extract the following parameters from the conversation:
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| payee_name | Yes | Name of the recipient |
-| payee_account | Yes | Bank account number of the recipient |
-| amount | Yes | Transfer amount (must be positive, max 50,000 CNY) |
+| payee_name | Yes | Name of the recipient (收款人姓名) |
+| payee_account | Yes | Bank account number of the recipient (收款账号) |
+| amount | Yes | Transfer amount, must be positive, max 50,000 CNY (转账金额) |
 | currency | No (default: CNY) | Currency code |
-| remark | No | Transfer memo/remark |
+| remark | No | Transfer memo/remark (备注) |
 
 ## Step 2: Collect Missing Parameters
 If any **required** parameter is missing, use `ask_clarification` with `clarification_type="missing_info"` to ask the user for each missing field.
@@ -24,9 +24,9 @@ Before executing the transfer, summarize the details and ask the user to confirm
 Use `ask_clarification` with `clarification_type="risk_confirmation"` to get explicit confirmation.
 
 ## Step 4: Execute Transfer
-Read `workflow_api.yaml` in this folder for the endpoint URL, then call:
+Call the workflow API:
 ```
-call_workflow(endpoint="<endpoint from workflow_api.yaml>", params={
+call_workflow(endpoint="http://localhost:9100/api/v1/workflows/transfer", params={
   "payee_name": "...",
   "payee_account": "...",
   "amount": ...,
