@@ -263,10 +263,17 @@ def _build_middlewares(
     if summarization_middleware is not None:
         middlewares.append(summarization_middleware)
 
-    # Add TodoList middleware if plan mode is enabled
+    # Add TodoList middleware if plan mode is enabled OR banking assistant mode is active
     cfg = _get_runtime_config(config)
     is_plan_mode = cfg.get("is_plan_mode", False)
-    todo_list_middleware = _create_todo_list_middleware(is_plan_mode)
+    enable_todo = is_plan_mode
+    if not enable_todo:
+        # Enable todo list for banking assistant mode (multi-intent tracking via write_todos)
+        from deerflow.agents.lead_agent.prompt import get_enabled_skills_for_config
+
+        skills = get_enabled_skills_for_config(resolved_app_config)
+        enable_todo = any("call_workflow" in (skill.allowed_tools or []) for skill in skills)
+    todo_list_middleware = _create_todo_list_middleware(enable_todo)
     if todo_list_middleware is not None:
         middlewares.append(todo_list_middleware)
 
