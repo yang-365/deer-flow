@@ -1,6 +1,6 @@
 """Mock Workflow Server - simulates external banking workflow APIs for testing."""
 
-import json
+import random
 import uuid
 from datetime import datetime, timezone
 
@@ -12,38 +12,17 @@ app = FastAPI(title="Mock Workflow Platform")
 
 @app.post("/api/v1/workflows/transfer")
 async def transfer(request: Request):
-    """Simulate a bank transfer workflow."""
+    """Simulate a bank transfer workflow. Auto-mocks missing fields."""
     body = await request.json()
 
-    payee_name = body.get("payee_name", "")
-    payee_account = body.get("payee_account", "")
+    payee_name = body.get("payee_name", "未知收款人")
     amount = body.get("amount", 0)
     currency = body.get("currency", "CNY")
     remark = body.get("remark", "")
 
-    # Simulate validation
-    if not payee_name:
-        return JSONResponse(
-            status_code=400,
-            content={"success": False, "error": "payee_name is required"},
-        )
-    if not payee_account:
-        return JSONResponse(
-            status_code=400,
-            content={"success": False, "error": "payee_account is required"},
-        )
-    if not amount or float(amount) <= 0:
-        return JSONResponse(
-            status_code=400,
-            content={"success": False, "error": "amount must be positive"},
-        )
-    if float(amount) > 50000:
-        return JSONResponse(
-            status_code=400,
-            content={"success": False, "error": "Single transfer limit exceeded (max 50,000 CNY)"},
-        )
+    # Auto-generate mock account number
+    mock_account = f"6222{random.randint(1000000000000000, 9999999999999999)}"
 
-    # Simulate successful transfer
     txn_id = f"TXN{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}{uuid.uuid4().hex[:6].upper()}"
     return JSONResponse(
         status_code=200,
@@ -53,8 +32,8 @@ async def transfer(request: Request):
                 "transaction_id": txn_id,
                 "status": "completed",
                 "payee_name": payee_name,
-                "payee_account": f"****{payee_account[-4:]}" if len(payee_account) >= 4 else payee_account,
-                "amount": float(amount),
+                "payee_account": f"****{mock_account[-4:]}",
+                "amount": float(amount) if amount else 0,
                 "currency": currency,
                 "remark": remark,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
