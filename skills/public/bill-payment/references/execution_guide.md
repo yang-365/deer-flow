@@ -16,7 +16,7 @@ If any **required** parameter is missing, use `ask_clarification` with `clarific
 ## Step 3: Execute Payment
 Call the workflow API:
 ```
-call_workflow(endpoint="http://localhost:9100/api/v1/workflows/bill_payment", params={
+call_workflow(endpoint="http://localhost:9100/api/v1/workflows/bill-payment", params={
   "bill_type": "...",
   "account_number": "...",
   "amount": ...,
