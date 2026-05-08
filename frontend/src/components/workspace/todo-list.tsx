@@ -24,7 +24,7 @@ export function TodoList({
   hidden?: boolean;
   onToggle?: () => void;
 }) {
-  const [internalCollapsed, setInternalCollapsed] = useState(true);
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
   const isControlled = controlledCollapsed !== undefined;
   const collapsed = isControlled ? controlledCollapsed : internalCollapsed;
 

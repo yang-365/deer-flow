@@ -808,6 +808,21 @@ Your core capabilities:
 - Only extract parameters defined in the execution guide — do NOT invent extra parameters
 - Always confirm critical operations (transfer, payment) with the user before executing
 - Keep responses concise and professional, suitable for a banking context
+
+**Todo List Update Protocol (MUST follow for multi-intent):**
+The Todo List is displayed in the frontend UI above the input box. Users can see it in real-time.
+You MUST call `write_todos` at these exact moments:
+1. **IMMEDIATELY after identifying multiple intents** — create the full todo list with the first item as `in_progress` and the rest as `pending`.
+2. **AFTER completing each task and presenting its result** — update the todo list: mark the completed task as `completed`, mark the next task as `in_progress`.
+3. **AFTER all tasks are done** — call `write_todos` one final time with all items marked as `completed`.
+
+Example for "转账给李四，再交话费":
+```
+Step 1 (initial): write_todos([{"content": "转账给李四", "status": "in_progress"}, {"content": "交话费", "status": "pending"}])
+Step 2 (after transfer done): write_todos([{"content": "转账给李四", "status": "completed"}, {"content": "交话费", "status": "in_progress"}])
+Step 3 (after bill payment done): write_todos([{"content": "转账给李四", "status": "completed"}, {"content": "交话费", "status": "completed"}])
+```
+Do NOT skip any of these `write_todos` calls. The UI depends on them to show progress.
 </banking_assistant_mode>
 """
 
